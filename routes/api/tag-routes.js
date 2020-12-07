@@ -4,10 +4,15 @@ const { Tag, Product, ProductTag } = require('../../models');
 // The `/api/tags` endpoint
 
 router.get('/', (req, res) => {
-  // find all tags
-  // be sure to include its associated Product data
+  // find all products
+  // be sure to include its associated Category and Tag data
   Tag.findAll({
-    include: [Product],
+    include: [
+      {
+        model: Product,
+        through: ProductTag,
+      },
+    ],
   }).then(tag => res.json(tag))
   .catch(err => {
     console.log(err);
@@ -16,23 +21,29 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:id', (req, res) => {
-  // find a single tag by its `id`
-  // be sure to include its associated Product data
+  // find a single product by its `id`
+  // be sure to include its associated Category and Tag data
   Tag.findOne({
     where:{
       id: req.params.id
     },
-    include:[Product],
+    include: [
+      {
+        model: Product,
+        through: ProductTag,
+      },
+    ],
   })
   .then(tag => res.json(tag))
-  .catch(err=> {
+  .catch(err => {
     console.log(err);
-    res.status(500.).json(err);
+    res.status(500).json(err);
   });
 });
 
+
 router.post('/', (req, res) => {
-  // create a new tag
+  // create a new category
   Tag.create(
     req.body
   )
@@ -44,7 +55,7 @@ router.post('/', (req, res) => {
 });
 
 router.put('/:id', (req, res) => {
-  // update a tag's name by its `id` value
+  // update a category by its `id` value
   Tag.update(req.body, {
     where:{
       id: req.params.id,
@@ -58,7 +69,7 @@ router.put('/:id', (req, res) => {
 });
 
 router.delete('/:id', (req, res) => {
-  // delete on tag by its `id` value
+  // delete a category by its `id` value
   Tag.destroy({
     where: {
       id: req.params.id
@@ -70,5 +81,4 @@ router.delete('/:id', (req, res) => {
     res.status(500).json(err);
   });
 });
-
 module.exports = router;
